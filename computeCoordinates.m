@@ -22,17 +22,17 @@ idx = 1;
 
 while(idx <= nPoints)
     
-    mbSize = 2 ^ mod(idx, scale + 1);
+    mbSize = mod(idx, scale) + 1;
     
-    %pts1 = round(normrnd(0,sqrt(blkSize*blkSize/25),[2 nPoints]));
-    pts1 = unidrnd(blkSize - mbSize + 1, 2, 1) - blkRadii - 1;
+    pts1 = round(normrnd(0,sqrt(blkSize*blkSize/25),[2 1]));
+    %pts1 = unidrnd(blkSize - mbSize + 1, 2, 1) - blkRadii - 1;
     pts1((pts1) > blkRadii - mbSize + 1) = blkRadii - mbSize + 1;
     pts1((pts1) < -blkRadii) = -blkRadii;
     xi(1:2,idx) = pts1;
     xi(3,idx) = mbSize;
     
-    pts2 = unidrnd(blkSize - mbSize + 1, 2, 1) - blkRadii - 1;
-    %pts2 = round(normrnd(0,sqrt(blkSize*blkSize/25),[2 nPoints]));
+    %pts2 = unidrnd(blkSize - mbSize + 1, 2, 1) - blkRadii - 1;
+    pts2 = round(normrnd(0,sqrt(blkSize*blkSize/25),[2 1]));
     pts2((pts2) > blkRadii - mbSize + 1) = blkRadii - mbSize + 1;
     pts2((pts2) < -blkRadii) = -blkRadii;
     yi(1:2,idx) = pts2;

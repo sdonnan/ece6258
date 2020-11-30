@@ -17,7 +17,7 @@ datasetList = {'kth-tips', 'kth-tips-2b'} ; %, 'curet'};
 
 % Set the options for the BIGD feature extraction
 blkRadii = 7;
-scale = 2;
+scale = 4;
 % for nPoints = 80:80
 for nPoints = 20:20 % was 20, trying all numbers of sample points from 1 to 20
 
