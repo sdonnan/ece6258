@@ -19,7 +19,7 @@ if ~iscell(im), im = {im} ; end
 descrs = cell(1, numel(im)) ;
 
 parfor i = 1:numel(im)
-% for i = 1:numel(im)
+%for i = 1:numel(im)
     
     fprintf('%s: %s\n', mfilename, im{i}) ;
     

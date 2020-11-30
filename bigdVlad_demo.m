@@ -13,26 +13,27 @@ addpath('external')
 run ext/vlfeat-0.9.20/toolbox/vl_setup.m
 
 % datasetList = {  'kth-tips','curet', 'umd'  };
-datasetList = {'kth-tips' }; 
+datasetList = {'kth-tips', 'kth-tips-2b'} ; %, 'curet'}; 
 
 % Set the options for the BIGD feature extraction
 blkRadii = 7;
+scale = 2;
 % for nPoints = 80:80
-for nPoints = 20
+for nPoints = 20:20 % was 20, trying all numbers of sample points from 1 to 20
 
-    [xi, yi] = computeCoordinates(blkRadii, nPoints);
+    [xi, yi] = computeCoordinates(blkRadii, nPoints, scale);
     dmdOpts.xi = xi;
     dmdOpts.yi = yi;
     dmdOpts.radii = blkRadii;
     dmdOpts.gridspace = 2;
-    dmdOpts.scale = 4;
+    dmdOpts.scale = scale;
 
     % Set the options for the VLAD encoding
     fvOpts.numDescrs = 500000;                     % The number of descriptors used for EM step
     
     fvOpts.numKmeanscluster = 128;                           % The number of the K-means centers for VLAD
 
-    crossValIndex = 10;                            % Cross validation index ( Perform tests for 10 random training and testing splits)
+    crossValIndex = 10; %was 10 tests                           % Cross validation index ( Perform tests for 10 random training and testing splits)
 
     meanAcc = zeros(numel(datasetList), 1);
     pmAcc = zeros(numel(datasetList), 1);

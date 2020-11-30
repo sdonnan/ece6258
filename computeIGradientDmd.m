@@ -35,20 +35,7 @@ pts1 = dmdOpts.xi;
 pts2 = dmdOpts.yi; 
 blkRadii = dmdOpts.radii; 
 gridSpacing = dmdOpts.gridspace; 
-maxScale = dmdOpts.scale;
-numSamp = size(pts1,2);
-samp_per_scale = numSamp/maxScale;
-
-% Check boundary conidtion for the block sizes
-pts1((pts1) > blkRadii - maxScale + 1) = blkRadii - maxScale +1;
-pts1((pts1) < -blkRadii) = -blkRadii;
-pts2((pts2) > blkRadii - maxScale+1) = blkRadii - maxScale+1;
-pts2((pts2) < -blkRadii) = -blkRadii;
-
-% Shift the sampling points 
-pts1 = uint16(pts1 + blkRadii +1);
-pts2 = uint16(pts2 + blkRadii +1);
-
+%maxScale = 2 ^ dmdOpts.scale;
 
 blkSize = 2*blkRadii +1;
 npts = size(pts1,2);
@@ -95,24 +82,38 @@ for j = 1:Igradient_fd
     for i = 1:npts
 
         % Micro-block size for the current sampling pair
-        mbSize = floor((i + samp_per_scale -1)/samp_per_scale);
+        %mbSize = 2 ^ mod(i, dmdOpts.scale + 1);
+        mbSize = pts1(3, i);
+        
+        xy1 = pts1(1:2, i);
+        xy2 = pts2(1:2, i);
+        
+        % Check boundary conidtion for the block sizes
+%         xy1((xy1) > blkRadii - mbSize + 1) = blkRadii - mbSize + 1;
+%         xy1((xy1) < -blkRadii) = -blkRadii;
+%         xy2((xy2) > blkRadii - mbSize + 1) = blkRadii - mbSize + 1;
+%         xy2((xy2) < -blkRadii) = -blkRadii;
+
+        % Shift the sampling points 
+        xy1 = uint16(xy1 + blkRadii +1);
+        xy2 = uint16(xy2 + blkRadii +1);
 
         % Integral image coordinates for computing the sum of the pixel values
         % of size mbSize
-        iiPt1 = iimg(pts1(1,i) + mbSize:pts1(1,i)+effr + mbSize,pts1(2,i) + mbSize:pts1(2,i)+effc + mbSize);
-        iiPt2 = iimg(pts1(1,i)+ mbSize:pts1(1,i)+effr+ mbSize,pts1(2,i):pts1(2,i)+effc);
-        iiPt3 = iimg(pts1(1,i):pts1(1,i)+effr,pts1(2,i)+ mbSize:pts1(2,i)+effc+ mbSize);
-        iiPt4 = iimg(pts1(1,i):pts1(1,i)+effr,pts1(2,i):pts1(2,i)+effc);
+        iiPt1 = iimg(xy1(1) + mbSize:xy1(1)+effr + mbSize,xy1(2) + mbSize:xy1(2)+effc + mbSize);
+        iiPt2 = iimg(xy1(1)+ mbSize:xy1(1)+effr+ mbSize,xy1(2):xy1(2)+effc);
+        iiPt3 = iimg(xy1(1):xy1(1)+effr,xy1(2)+ mbSize:xy1(2)+effc+ mbSize);
+        iiPt4 = iimg(xy1(1):xy1(1)+effr,xy1(2):xy1(2)+effc);
 
         % The block sum for the mbSize for whole image
         blockSum1 = iiPt4 + iiPt1 - iiPt2 - iiPt3;
 
 
-        % Integral image coordinates for the blocks using pts2 as reference
-        iiPt1 = iimg(pts2(1,i) + mbSize:pts2(1,i)+effr + mbSize,pts2(2,i) + mbSize:pts2(2,i)+effc + mbSize);
-        iiPt2 = iimg(pts2(1,i) + mbSize:pts2(1,i)+effr+ mbSize,pts2(2,i):pts2(2,i)+effc);
-        iiPt3 = iimg(pts2(1,i):pts2(1,i)+effr,pts2(2,i)+ mbSize:pts2(2,i)+effc+ mbSize);
-        iiPt4 = iimg(pts2(1,i):pts2(1,i)+effr,pts2(2,i):pts2(2,i)+effc);
+        % Integral image coordinates for the blocks using xy2 as reference
+        iiPt1 = iimg(xy2(1) + mbSize:xy2(1)+effr + mbSize,xy2(2) + mbSize:xy2(2)+effc + mbSize);
+        iiPt2 = iimg(xy2(1) + mbSize:xy2(1)+effr+ mbSize,xy2(2):xy2(2)+effc);
+        iiPt3 = iimg(xy2(1):xy2(1)+effr,xy2(2)+ mbSize:xy2(2)+effc+ mbSize);
+        iiPt4 = iimg(xy2(1):xy2(1)+effr,xy2(2):xy2(2)+effc);
 
         % The block sum for the mbSize for whole image
         blockSum2 = iiPt4 + iiPt1 - iiPt2 - iiPt3;

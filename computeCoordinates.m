@@ -1,4 +1,4 @@
-function [ xi, yi ] = computeCoordinates(blkRadii, nPoints)
+function [ xi, yi ] = computeCoordinates(blkRadii, nPoints, scale)
 % The function generates random sampling pairs from an Isotropic Gaussian
 % Distribution for the BIGD feature computation.
 % Arguments:
@@ -15,26 +15,31 @@ function [ xi, yi ] = computeCoordinates(blkRadii, nPoints)
 %       [ xi, yi ] = get_sampling_points(blkRadii, nPoints);
 blkSize = 2*blkRadii +1;
 
-xi = [];
-yi = [];
+xi = zeros(3,nPoints);
+yi = zeros(3,nPoints);
 
-pts_assigned = 0;
+idx = 1;
 
-while(pts_assigned == 0)
+while(idx <= nPoints)
     
-    pts1 = round(normrnd(0,sqrt(blkSize*blkSize/25),[2 nPoints]));
-    pts1((pts1) > blkRadii) = blkRadii;
+    mbSize = 2 ^ mod(idx, scale + 1);
+    
+    %pts1 = round(normrnd(0,sqrt(blkSize*blkSize/25),[2 nPoints]));
+    pts1 = unidrnd(blkSize - mbSize + 1, 2, 1) - blkRadii - 1;
+    pts1((pts1) > blkRadii - mbSize + 1) = blkRadii - mbSize + 1;
     pts1((pts1) < -blkRadii) = -blkRadii;
-    xi = [xi, pts1];
+    xi(1:2,idx) = pts1;
+    xi(3,idx) = mbSize;
     
-    pts2 = round(normrnd(0,sqrt(blkSize*blkSize/25),[2 nPoints]));
-    pts2((pts2) > blkRadii) = blkRadii;
+    pts2 = unidrnd(blkSize - mbSize + 1, 2, 1) - blkRadii - 1;
+    %pts2 = round(normrnd(0,sqrt(blkSize*blkSize/25),[2 nPoints]));
+    pts2((pts2) > blkRadii - mbSize + 1) = blkRadii - mbSize + 1;
     pts2((pts2) < -blkRadii) = -blkRadii;
-    yi = [yi, pts2];
+    yi(1:2,idx) = pts2;
+    yi(3,idx) = mbSize;
     
-    % Remove the sampling pair with same coordinates for both sets
-    pts_assigned = ~(sum(sum(xi == yi,1) == 2));
-    ids = find(sum(xi == yi,1) == 2);
-    xi(:,ids) = []; yi(:,ids) = [];
-    nPoints = length(ids);
+    if pts1 ~= pts2
+        idx = idx + 1;
+    end
+    
 end
