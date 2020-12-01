@@ -27,8 +27,8 @@ opts.numTrain = 40 ;
 opts.numTest = 41;
 opts.numVal = 0;
 opts.seed = 1 ;
-% opts.variant = 'kth-tips-2b' ;
-opts.variant = 'kth-tips' ;
+opts.variant = 'kth-tips-2b' ;
+% opts.variant = 'kth-tips' ;
 opts.autoDownload = true ;
 opts = vl_argparse(opts, varargin) ;
 
@@ -38,14 +38,14 @@ switch opts.variant
   case 'kth-tips'
     name = 'KTH_TIPS' ;
     checkClassName = 'sponge' ;
-    url = 'http://www.nada.kth.se/cvap/databases/kth-tips/kth_tips_col_200x200.tar' ;
+    url = 'https://www.csc.kth.se/cvap/databases/kth-tips/kth_tips_col_200x200.tar' ;
     numClasses = 10 ;
   % KTH-TIPS 2a does not have an equal number of images for each sample
   % 40 out of 44 have 108 images each; 4 have 72 images each
   case 'kth-tips-2b'
     name = 'KTH-TIPS2-b' ;
     checkClassName = 'wool' ;
-    url = 'http://www.nada.kth.se/cvap/databases/kth-tips/kth-tips2-b_col_200x200.tar' ;
+    url = 'http://www.csc.kth.se/cvap/databases/kth-tips/kth-tips2-b_col_200x200.tar' ;
     numClasses = 11 ;
     % TODO: check how to split
     % Timofte BMVC12: samples with all their 108 images are distributed
@@ -57,7 +57,7 @@ switch opts.variant
   case 'kth-tips-2a'
     name = 'KTH-TIPS2-a' ;
     checkClassName = 'wool' ;
-    url = 'http://www.nada.kth.se/cvap/databases/kth-tips/kth-tips2-a_col_200x200.tar' ;
+    url = 'http://www.csc.kth.se/cvap/databases/kth-tips/kth-tips2-a_col_200x200.tar' ;
     numClasses = 11 ;
     % TODO: check how to split
     % Timofte BMVC12: samples with all their 108 images are distributed
@@ -165,8 +165,11 @@ else
   imdb.images.set = sets(ok) ;
   imdb.images.class = classes(ok) ;
   imdb.imageDir = datasetDir ;
-
+  
+  % restrict training set if option lite is true
+  % analysis doesn't use this
   if opts.lite
+    printf('Doing lite version of training');
     ok = {} ;
     for c = 1:3
       ok{end+1} = vl_colsubset(find(imdb.images.class == c & imdb.images.set == 1), 5) ;

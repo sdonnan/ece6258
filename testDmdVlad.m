@@ -32,6 +32,8 @@ else
     switch opts.dataset
         case 'kth-tips', imdb = setupKTH_TIPS(opts.datasetDir, 'seed', opts.seed, ...
                 'lite', 0, 'variant', 'kth-tips');
+        case 'kth-tips-2b', imdb = setupKTH_TIPS(opts.datasetDir, 'seed', opts.seed, ...
+                'lite', 0, 'variant', 'kth-tips-2b');    
         case 'curet', imdb = setupCuret(opts.datasetDir, 'seed', opts.seed, ...
                 'lite', 0);
         case 'umd', imdb = setupUMD(opts.datasetDir, 'lite', 0, ...
@@ -47,15 +49,16 @@ end
 % --------------------------------------------------------------------
 
 
-numTrain = 5000 ;
+numTrain = 5000 ; % limits training inputs (doesn't apply to our data)
 train = vl_colsubset(find(imdb.images.set <= 2), numTrain, 'uniform') ;
 paths = cellfun(@(S) fullfile(imdb.imageDir, S), imdb.images.name(train), ...
     'Uniform', 0);
 
 centers = trainEncoder(paths, FVopts, DMDopts) ;
 
-descrs = encodeVlad(centers, cellfun(@(S) fullfile(imdb.imageDir, S), ...
-    imdb.images.name, 'Uniform', 0), DMDopts, FVopts) ;
+paths = cellfun(@(S) fullfile(imdb.imageDir, S), imdb.images.name, ...
+    'Uniform', 0);
+descrs = encodeVlad(centers, paths, DMDopts, FVopts) ;
 % --------------------------------------------------------------------
 %                                            Train and evaluate models
 % --------------------------------------------------------------------
@@ -100,9 +103,10 @@ for c = 1:numel(classRange)
   [w{c},b{c}] = vl_svmtrain(descrs(:,train), y(train), lambda, par{:}) ;
   scores{c} = w{c}' * descrs + b{c} ;
 
+  % computes the precision-recall (PR) curve
   [~,~,info] = vl_pr(y(test), scores{c}(test)) ;
-  ap(c) = info.ap ;
-  ap11(c) = info.ap_interp_11 ;
+  ap(c) = info.ap ; % average precision
+  ap11(c) = info.ap_interp_11 ; % 11-points interpolated average precision as defined by TREC
   fprintf('class %s AP %.2f; AP 11 %.2f\n', imdb.meta.classes{classRange(c)}, ...
           ap(c) * 100, ap11(c)*100) ;
 end
@@ -128,7 +132,7 @@ else
 end;
 
 save(fullfile(opts.resultDir, sprintf('result-.mat')), ...
-     'scores', 'ap', 'ap11', 'confusion', 'classRange', 'opts') ;
+     'scores', 'ap', 'ap11', 'confusion', 'classRange', 'opts','descrs') ;
 
 
 % figures
