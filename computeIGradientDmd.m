@@ -60,15 +60,13 @@ effr = r-blkSize;effc = c-blkSize;
 % Calculate image gradients and gradient magnitudes
 % [Gx, Gy] = imgradientxy(img);
 [Gx, Gy] = imgradientxy(dimg);
-Igradient_fd = 5;
+Igradient_fd = 4;
 featureimg_total = zeros(r,c,Igradient_fd);
 % featureimg_total(:,:,1) = img;
 featureimg_total(:,:,1) = dimg;
 featureimg_total(:,:,2) = Gx;
-featureimg_total(:,:,3) = abs(Gx);
-featureimg_total(:,:,4) = Gy;
-featureimg_total(:,:,5) = abs(Gy);
-
+featureimg_total(:,:,3) = Gy;
+featureimg_total(:,:,4) = (Gx.^2 + Gy.^2).^0.5;
 
 v_new = [];
 

@@ -13,7 +13,7 @@ addpath('external')
 run ext/vlfeat-0.9.20/toolbox/vl_setup.m
 
 % datasetList = {  'kth-tips','curet', 'umd'  };
-datasetList = {'kth-tips' }; 
+datasetList = {'kth-tips', 'kth-tips-2b' }; 
 
 % Set the options for the BIGD feature extraction
 blkRadii = 7;
@@ -32,7 +32,7 @@ for nPoints = 20
     
     fvOpts.numKmeanscluster = 128;                           % The number of the K-means centers for VLAD
 
-    crossValIndex = 10;                            % Cross validation index ( Perform tests for 10 random training and testing splits)
+    crossValIndex = 1;                            % Cross validation index ( Perform tests for 10 random training and testing splits)
 
     meanAcc = zeros(numel(datasetList), 1);
     pmAcc = zeros(numel(datasetList), 1);
