@@ -22,7 +22,10 @@ idx = 1;
 
 while(idx <= nPoints)
     
-    mbSize = mod(idx, scale) + 1;
+    % linear scales
+    % mbSize = mod(idx, scale) + 1;
+    % power scales
+    mbSize = 2 ^ mod(idx, scale + 1);
     
     pts1 = round(normrnd(0,sqrt(blkSize*blkSize/25),[2 1]));
     %pts1 = unidrnd(blkSize - mbSize + 1, 2, 1) - blkRadii - 1;
