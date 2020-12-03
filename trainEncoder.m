@@ -6,7 +6,7 @@ function centers = trainEncoder(images, FVopts, DMDopts)
 %% Step 1: obtain sample image descriptors
 max_descrs = FVopts.numDescrs;
 numImages = numel(images) ;
-numDescrsPerImage = ceil(max_descrs / numImages);
+numDescrsPerImage = FVopts.numDescrs;
 
 descrs = cell(1, numel(images)) ;
 

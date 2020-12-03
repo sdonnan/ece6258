@@ -13,7 +13,7 @@ addpath('external')
 run ext/vlfeat-0.9.20/toolbox/vl_setup.m
 
 % datasetList = {  'kth-tips','curet', 'umd'  };
-datasetList = {'kth-tips' }; 
+datasetList = {'kth-tips', 'kth-tips-2b' }; 
 
 % Set the options for the BIGD feature extraction
 blkRadii = 7;
@@ -28,7 +28,7 @@ for nPoints = 20
     dmdOpts.scale = 4;
 
     % Set the options for the VLAD encoding
-    fvOpts.numDescrs = 500000;                     % The number of descriptors used for EM step
+    fvOpts.numDescrs = 1250;                     % The number of descriptors per image
     
     fvOpts.numKmeanscluster = 128;                           % The number of the K-means centers for VLAD
 

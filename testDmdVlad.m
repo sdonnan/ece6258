@@ -145,7 +145,7 @@ if (1 == nargout)
 end
 
 
-if 0
+if 1
 figure(1) ; clf ;
 imagesc(confusion) ; axis square ;
 title([opts.prefix ' - ' meanAccuracy]) ;
